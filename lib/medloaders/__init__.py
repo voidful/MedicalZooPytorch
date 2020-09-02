@@ -1,16 +1,17 @@
 from torch.utils.data import DataLoader
 
-from .COVIDxdataset import COVIDxDataset
-from .Covid_Segmentation_dataset import COVID_Seg_Dataset
-from .brats2018 import MICCAIBraTS2018
-from .brats2019 import MICCAIBraTS2019
-from .brats2020 import MICCAIBraTS2020
-from .covid_ct_dataset import CovidCTDataset
-from .iseg2017 import MRIDatasetISEG2017
-from .iseg2019 import MRIDatasetISEG2019
-from .ixi_t1_t2 import IXIMRIdataset
-from .miccai_2019_pathology import MICCAI2019_gleason_pathology
-from .mrbrains2018 import MRIDatasetMRBRAINS2018
+# from .COVIDxdataset import COVIDxDataset
+# from .Covid_Segmentation_dataset import COVID_Seg_Dataset
+# from .brats2018 import MICCAIBraTS2018
+# from .brats2019 import MICCAIBraTS2019
+# from .brats2020 import MICCAIBraTS2020
+# from .covid_ct_dataset import CovidCTDataset
+# from .iseg2017 import MRIDatasetISEG2017
+# from .iseg2019 import MRIDatasetISEG2019
+# from .ixi_t1_t2 import IXIMRIdataset
+# from .miccai_2019_pathology import MICCAI2019_gleason_pathology
+# from .mrbrains2018 import MRIDatasetMRBRAINS2018
+from .braints2020 import MRIDatasetBRAINTS2020
 
 
 def generate_datasets(args, path='.././datasets'):
@@ -67,11 +68,18 @@ def generate_datasets(args, path='.././datasets'):
                                                     crop_dim=args.dim,
                                                     classes=args.classes, samples=samples_train,
                                                     save=True)
-
     elif args.dataset_name == "ixi":
         loader = IXIMRIdataset(args, dataset_path=path, voxels_space=args.dim, modalities=args.inModalities, save=True)
         generator = DataLoader(loader, **params)
         return generator, loader.affine
+    elif args.dataset_name == "braints2020":
+
+        train_loader = MRIDatasetBRAINTS2020(args, 'train', dataset_path=path, classes=args.classes, crop_dim=args.dim,
+                                             samples=samples_train, load=args.loadData)
+
+        val_loader = MRIDatasetBRAINTS2020(args, 'val', dataset_path=path, classes=args.classes, crop_dim=args.dim,
+                                           samples=samples_val, load=args.loadData)
+
 
     elif args.dataset_name == "brats2018":
         total_data = 244
@@ -169,7 +177,7 @@ def select_full_volume_for_infer(args, path='.././datasets'):
                                             split_id=0,
                                             samples=samples_val)
     elif args.dataset_name == "miccai2019":
-        total_data = 244
+        total_data = 1438
         split_idx = int(split_percent * total_data) - 1
 
         val_loader = MICCAI2019_gleason_pathology('val', dataset_path=path, split_idx=split_idx, crop_dim=args.dim,
@@ -185,6 +193,13 @@ def select_full_volume_for_infer(args, path='.././datasets'):
         loader = IXIMRIdataset(dataset_path=path, voxels_space=args.dim, modalities=args.inModalities, save=True)
         generator = DataLoader(loader, **params)
         return generator, loader.affine
+
+    elif args.dataset_name == "braints2020":
+        train_loader = MRIDatasetBRAINTS2020('train', dataset_path=path, classes=args.classes, crop_dim=args.dim,
+                                             samples=samples_train)
+
+        val_loader = MRIDatasetBRAINTS2020('val', dataset_path=path, classes=args.classes, crop_dim=args.dim,
+                                           samples=samples_val)
 
     elif args.dataset_name == "brats2018":
         total_data = 244

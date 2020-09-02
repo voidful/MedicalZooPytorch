@@ -54,6 +54,15 @@ class TestDataLoaders:
                                                                                                    path='.././datasets')
         print("miccai2019  OK!", len(training_generator), len(val_generator))
 
+    def braints2020(self):
+        self.args.inChannels = 2
+        self.args.inModalities = 2
+        self.args.classes = 2
+        self.args.dataset_name = "braints2020"
+        training_generator, val_generator, full_volume, affine = medical_loaders.generate_datasets(self.args,
+                                                                                                   path='.././datasets')
+        print("braints2020  OK!", len(training_generator), len(val_generator))
+
     def ixi(self):
         self.args.inChannels = 2
         self.args.inModalities = 2
@@ -92,9 +101,10 @@ class TestDataLoaders:
 
 test_obj = TestDataLoaders(batch=1, dim=64, classes=10)
 
-test_obj.MRBRAINS_4_class()
-test_obj.MRBRAINS_9_class()
-test_obj.ISEG2017()
-test_obj.brats2018()
-test_obj.miccai2019()
+# test_obj.MRBRAINS_4_class()
+# test_obj.MRBRAINS_9_class()
+# test_obj.ISEG2017()
+# test_obj.brats2018()
+# test_obj.miccai2019()
+test_obj.braints2020()
 # test_obj.ixi()
